@@ -68,3 +68,40 @@ enum TCPFlags {
 }
 
 // MARK: Dissector function
+func dissect(frame: UnsafeRawPointer, captureLength: Int) -> Result<ParsedPacket, DissectError> {
+    
+    // Ethernet layer (14B min)
+    guard captureLength >= 14 else { return .failure(.tooShort) }
+    
+    // Read MACs by loading individual bytes
+    // No loadUnaligned for full byte range because there's no UInt48 to match 6B MACaddr size
+    let dstMAC = MACAddress(bytes (
+        frame.loadUnaligned(fromByteOffset: 0, as: UInt8.self),
+        frame.loadUnaligned(fromByteOffset: 1, as: UInt8.self),
+        frame.loadUnaligned(fromByteOffset: 2, as: UInt8.self),
+        frame.loadUnaligned(fromByteOffset: 3, as: UInt8.self),
+        frame.loadUnaligned(fromByteOffset: 4, as: UInt8.self),
+        frame.loadUnaligned(fromByteOffset: 5, as: UInt8.self),
+    ))
+    
+    let srcMAC = MACAddress(bytes: (
+        frame.loadUnaligned(fromByteOffset: 6, as: UInt8.self),
+        frame.loadUnaligned(fromByteOffset: 7, as: UInt8.self),
+        frame.loadUnaligned(fromByteOffset: 8, as: UInt8.self),
+        frame.loadUnaligned(fromByteOffset: 9, as: UInt8.self),
+        frame.loadUnaligned(fromByteOffset: 10, as: UInt8.self),
+        frame.loadUnaligned(fromByteOffset: 11, as: UInt8.self),
+    ))
+    
+    // EtherType is big-endian on the wire
+    // Using bigEndian: to byte-swap for correct host byte order
+    let etherType = UInt16(bigEndian:
+                            frame.loadUnaligned(fromByteOffset: 12, as: UInt16.self)
+    )
+    
+    // We only account for IPv4
+    guard etherType = 0x0800 else { return .failure(.notIPv4) }
+    
+    // Network/IP layer (Starts at byte 14, minimum 20B)
+    // TODO: network layer
+}
