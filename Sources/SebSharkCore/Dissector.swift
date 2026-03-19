@@ -132,6 +132,10 @@ func dissect(frame: UnsafeRawPointer, captureLength: Int) -> Result<ParsedPacket
     let transport: TransportLayer
     
     switch ipProtocol {
+        
+    case 1:
+        transport = .icmp
+        
     case 6: // TCP - min 20B header
         guard captureLength >= transportOffset + 20 else { return .failure(.truncated) }
         
@@ -207,10 +211,7 @@ func dissect(frame: UnsafeRawPointer, captureLength: Int) -> Result<ParsedPacket
             payloadOffset:  = payloadOffset,
             payloadLength:  = payloadLength
         ))
-        
-    case 1:
-        transport = .icmp
-        
+
     default:
         transport = .other(ipProtocol)
     }
