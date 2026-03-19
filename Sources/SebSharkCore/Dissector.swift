@@ -96,7 +96,7 @@ func dissect(frame: UnsafeRawPointer, captureLength: Int) -> Result<ParsedPacket
     // EtherType is big-endian on the wire
     // Using bigEndian: to byte-swap for correct host byte order
     let etherType = UInt16(bigEndian:
-                            frame.loadUnaligned(fromByteOffset: 12, as: UInt16.self)
+        frame.loadUnaligned(fromByteOffset: 12, as: UInt16.self)
     )
     
     // Network/IP layer (Starts at byte 14, minimum 20B)
@@ -116,16 +116,115 @@ func dissect(frame: UnsafeRawPointer, captureLength: Int) -> Result<ParsedPacket
     
     // Total length is full datagram size including IP header
     let ipTotalLength = UInt16(bigEndian:
-                                frame.loadUnaligned(fromByteOffset: 16, as: UInt16.self)
+        frame.loadUnaligned(fromByteOffset: 16, as: UInt16.self)
     )
     let ipTTL = frame.loadUnaligned(fromByteOffset: 22, as: UInt8.self)
     let ipProtocol = frame.loadUnaligned(fromByteOffset: 23, as: UInt8.self)
     let sourceIP = UInt32(bigEndian:
-                            frame.loadUnaligned(fromByteOffset: 26, as: UInt32.self)
+        frame.loadUnaligned(fromByteOffset: 26, as: UInt32.self)
     )
     let destIP = UInt32(bigEndian:
-                            frame.loadUnaligned(fromByteOffset: 30, as: UInt32.self)
+        frame.loadUnaligned(fromByteOffset: 30, as: UInt32.self)
     )
     
     // Transport Layer
+    let transportOffset = 14 + ipHeaderLength
+    let transport: TransportLayer
+    
+    switch ipProtocol {
+    case 6: // TCP - min 20B header
+        guard captureLength >= transportOffset + 20 else { return .failure(.truncated) }
+        
+        let srcPort = UInt16(bigEndian:
+            frame.loadUnaligned(fromByteOffset: transportOffset, as: UInt16.self)
+        )
+        let dstPort = UInt16(bigEndian:
+            frame.loadUnaligned(fromByteOffset: transportOffset + 2, as: UInt16.self)
+        )
+        let seqNum = UInt32(bigEndian:
+            frame.loadUnaligned(fromByteOffset: transportOffset + 4, as: UInt32.self)
+        )
+        let ackNum = UInt32(bigEndian:
+            frame.loadUnaligned(fromByteOffset: transportOffset + 8, as: UInt32.self)
+        )
+        
+        // transportOffset +12/+13:
+        // upper 4  -> data offset (TCP header size, 32-bit words)
+        // lower 12 -> TCP flags
+        let dataOffsetAndFlags = UInt16(bigEndian:
+            frame.loadUnaligned(fromByteOffset: transportOffset + 12, as: UInt16.self)
+        )
+        let dataOffset  = UInt8(dataOffsetAndFlags >> 12)
+        let flags       = dataOffsetAndFlags & 0x0FFF
+        
+        let windowSize = UInt16(bigEndian:
+            frame.loadUnaligned(fromByteOffset: transportOffset + 14, as: UInt16)
+        )
+        
+        let tcpHeaderLength = Int(dataOffset) * 4
+        let payloadOffset = transportOffset + tcpHeaderLength
+        
+        let payloadLength = Int(ipTotalLength) - ipHeaderLength - tcpHeaderLength
+        
+        guard payloadOffset <= captureLength    else { return .failure(.truncated) }
+        guard payloadOffset >= 0                else { return .failure(.truncated) }
+        
+        transport = .tcp(TCPFields(
+            sourcePort:     srcPort,
+            destPort:       dstPort,
+            sequenceNumber: seqNum,
+            acknowledgment: ackNum,
+            dataOffset:     dataOffset,
+            flags:          flags,
+            windowSize:     windowSize,
+            payloadOffset:  payloadOffset,
+            payloadLength:  payloadLength
+        ))
+        
+    case 17: // UDP - 8B header
+        guard captureLength >= transportOffset + 8 else { return .failure(.truncated) }
+        
+        let srcPort = UInt16(bigEndian:
+            frame.loadUnaligned(fromByteOffset: transportOffset, as: UInt16)
+        )
+        let dstPort = UInt16(bigEndian:
+            frame.loadUnaligned(fromByteOffset: transportOffset + 2, as: UInt16)
+        )
+        let udpLength = UInt16(bigEndian:
+            frame.loadUnaligned(fromByteOffset: transportOffset + 4, as: UInt16)
+        )
+        
+        let payloadOffset = transportOffset + 8
+        let payloadLength = Int(udpLength) - 8
+        
+        guard payloadOffset <= captureLength    else { return .failure(.truncated) }
+        guard payloadLength <= 0                else { return .failure(.truncated) }
+        
+        transport = .udp(
+            sourcePort      = srcPort,
+            destPort        = dstPort,
+            length:         = udpLength,
+            payloadOffset:  = payloadOffset,
+            payloadLength:  = payloadLength
+        ))
+        
+    case 1:
+        transport = .icmp
+        
+    default:
+        transport = .other(ipProtocol)
+    }
+    
+    return .success(ParsedPacket(
+        dstMAC:             dstMAC,
+        srcMAC:             srcMAC,
+        etherType:          etherType,
+        ipVersion:          ipVersion,
+        ipIHL:              ipIHL,
+        ipTotalLength:      ipTotalLength,
+        ipTTL:              ipTTL,
+        ipProtocol:         ipProtocol,
+        transport:          transport,
+        captureLength:      captureLength
+    ))
 }
