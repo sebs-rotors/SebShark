@@ -99,9 +99,33 @@ func dissect(frame: UnsafeRawPointer, captureLength: Int) -> Result<ParsedPacket
                             frame.loadUnaligned(fromByteOffset: 12, as: UInt16.self)
     )
     
+    // Network/IP layer (Starts at byte 14, minimum 20B)
+    
     // We only account for IPv4
     guard etherType = 0x0800 else { return .failure(.notIPv4) }
+    guard captureLength >= 34 else { return .failure(.tooShort) }
     
-    // Network/IP layer (Starts at byte 14, minimum 20B)
-    // TODO: network layer
+    let versionIHL  = frame.loadUnaligned(fromByteOffset: 14, as: UInt8.self)
+    let ipVersion   = versionIHL >> 4
+    let ipIHL       = versionIHL & 0x0F
+    
+    guard ipIHL >= 5 else { return .failure(.malformedIHL) }
+    
+    let ipHeaderLength = Int(ipIHL) * 4
+    guard captureLength >= 14 + ipHeaderLength else { return .failure(.truncated) }
+    
+    // Total length is full datagram size including IP header
+    let ipTotalLength = UInt16(bigEndian:
+                                frame.loadUnaligned(fromByteOffset: 16, as: UInt16.self)
+    )
+    let ipTTL = frame.loadUnaligned(fromByteOffset: 22, as: UInt8.self)
+    let ipProtocol = frame.loadUnaligned(fromByteOffset: 23, as: UInt8.self)
+    let sourceIP = UInt32(bigEndian:
+                            frame.loadUnaligned(fromByteOffset: 26, as: UInt32.self)
+    )
+    let destIP = UInt32(bigEndian:
+                            frame.loadUnaligned(fromByteOffset: 30, as: UInt32.self)
+    )
+    
+    // Transport Layer
 }
