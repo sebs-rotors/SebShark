@@ -1,0 +1,12 @@
+{
+  "": {
+    "swift-dependencies": "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/index-build/arm64-apple-macosx/debug/SebShark.build/master.swiftdeps"
+  },
+  "/Users/sebisidor/Code/Personal/Tasks/SebShark/Sources/SebShark/main.swift": {
+    "dependencies": "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/index-build/arm64-apple-macosx/debug/SebShark.build/main.d",
+    "object": "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/index-build/arm64-apple-macosx/debug/SebShark.build/main.swift.o",
+    "swiftmodule": "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/index-build/arm64-apple-macosx/debug/SebShark.build/main~partial.swiftmodule",
+    "swift-dependencies": "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/index-build/arm64-apple-macosx/debug/SebShark.build/main.swiftdeps",
+    "diagnostics": "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/index-build/arm64-apple-macosx/debug/SebShark.build/main.dia"
+  }
+}

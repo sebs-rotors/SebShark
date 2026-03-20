@@ -20,6 +20,11 @@ let package = Package(
                 .unsafeFlags(["-strict-concurrency=complete"])
             ]
         ),
+        .target(
+            name: "CBPFCapture",
+            path: "Sources/CBPFCapture",
+            publicHeadersPath: "include"
+        ),
         .executableTarget(
             name: "SebShark",
             dependencies: [

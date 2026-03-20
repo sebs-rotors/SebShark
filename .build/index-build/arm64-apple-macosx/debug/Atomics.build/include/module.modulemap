@@ -1,0 +1,3 @@
+module Atomics {
+    header "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/index-build/arm64-apple-macosx/debug/Atomics.build/include/Atomics-Swift.h"
+}
