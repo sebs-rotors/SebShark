@@ -22,39 +22,53 @@ struct MACAddress: Sendable {
     let bytes: (UInt8, UInt8, UInt8, UInt8, UInt8, UInt8)
 }
 
+struct TCPFields: Sendable {
+    let sourcePort:         UInt16
+    let destPort:           UInt16
+    let sequenceNumber:     UInt32
+    let acknowledgment:     UInt32
+    let dataOffset:         UInt8
+    let flags:              UInt16
+    let windowSize:         UInt16
+    let payloadOffset:      Int
+    let payloadLength:      Int
+}
+
 struct UDPFields: Sendable {
-    let sourcePort: UInt16
-    let destPort: UInt16
-    let length: UInt16
-    let payloadOffset: Int
-    let payloadLength: Int
+    let sourcePort:         UInt16
+    let destPort:           UInt16
+    let length:             UInt16
+    let payloadOffset:      Int
+    let payloadLength:      Int
 }
 
 enum TransportLayer: Sendable {
+    case icmp
     case tcp(TCPFields)
     case udp(UDPFields)
-    case icmp
     case other(UInt8)       // protocol number this dissector just cannot comprehend
 }
 
 struct ParsedPacket: Sendable {
     // Ethernet layer
-    let dstMAC: MACAddress
-    let srcMAC: MACAddress
-    let etherType: UInt16
+    let dstMAC:             MACAddress
+    let srcMAC:             MACAddress
+    let etherType:          UInt16
     
     // IPv4 (Network) layer
-    let ipVersion: UInt8
-    let ipIHL: UInt8
-    let ipTotalLength: UInt16
-    let ipTTL: UInt8
-    let ipProtocol: UInt8
+    let ipVersion:          UInt8
+    let ipIHL:              UInt8
+    let ipTotalLength:      UInt16
+    let ipTTL:              UInt8
+    let ipProtocol:         UInt8
+    let sourceIP:           UInt32
+    let destIP:             UInt32
     
     // Transport layer
-    let transport: TransportLayer
+    let transport:          TransportLayer
     
     // Original capture size
-    let captureLength: Int
+    let captureLength:      Int
 }
 
 // TCP flag masks
@@ -75,7 +89,7 @@ func dissect(frame: UnsafeRawPointer, captureLength: Int) -> Result<ParsedPacket
     
     // Read MACs by loading individual bytes
     // No loadUnaligned for full byte range because there's no UInt48 to match 6B MACaddr size
-    let dstMAC = MACAddress(bytes (
+    let dstMAC = MACAddress(bytes: (
         frame.loadUnaligned(fromByteOffset: 0, as: UInt8.self),
         frame.loadUnaligned(fromByteOffset: 1, as: UInt8.self),
         frame.loadUnaligned(fromByteOffset: 2, as: UInt8.self),
@@ -102,7 +116,7 @@ func dissect(frame: UnsafeRawPointer, captureLength: Int) -> Result<ParsedPacket
     // Network/IP layer (Starts at byte 14, minimum 20B)
     
     // We only account for IPv4
-    guard etherType = 0x0800 else { return .failure(.notIPv4) }
+    guard etherType == 0x0800 else { return .failure(.notIPv4) }
     guard captureLength >= 34 else { return .failure(.tooShort) }
     
     let versionIHL  = frame.loadUnaligned(fromByteOffset: 14, as: UInt8.self)
@@ -159,10 +173,10 @@ func dissect(frame: UnsafeRawPointer, captureLength: Int) -> Result<ParsedPacket
             frame.loadUnaligned(fromByteOffset: transportOffset + 12, as: UInt16.self)
         )
         let dataOffset  = UInt8(dataOffsetAndFlags >> 12)
-        let flags       = dataOffsetAndFlags & 0x0FFF
+        let flags       = dataOffsetAndFlags & 0x003F
         
         let windowSize = UInt16(bigEndian:
-            frame.loadUnaligned(fromByteOffset: transportOffset + 14, as: UInt16)
+            frame.loadUnaligned(fromByteOffset: transportOffset + 14, as: UInt16.self)
         )
         
         let tcpHeaderLength = Int(dataOffset) * 4
@@ -189,27 +203,27 @@ func dissect(frame: UnsafeRawPointer, captureLength: Int) -> Result<ParsedPacket
         guard captureLength >= transportOffset + 8 else { return .failure(.truncated) }
         
         let srcPort = UInt16(bigEndian:
-            frame.loadUnaligned(fromByteOffset: transportOffset, as: UInt16)
+            frame.loadUnaligned(fromByteOffset: transportOffset, as: UInt16.self)
         )
         let dstPort = UInt16(bigEndian:
-            frame.loadUnaligned(fromByteOffset: transportOffset + 2, as: UInt16)
+            frame.loadUnaligned(fromByteOffset: transportOffset + 2, as: UInt16.self)
         )
         let udpLength = UInt16(bigEndian:
-            frame.loadUnaligned(fromByteOffset: transportOffset + 4, as: UInt16)
+            frame.loadUnaligned(fromByteOffset: transportOffset + 4, as: UInt16.self)
         )
         
         let payloadOffset = transportOffset + 8
         let payloadLength = Int(udpLength) - 8
         
         guard payloadOffset <= captureLength    else { return .failure(.truncated) }
-        guard payloadLength <= 0                else { return .failure(.truncated) }
+        guard payloadLength >= 0                else { return .failure(.truncated) }
         
-        transport = .udp(
-            sourcePort      = srcPort,
-            destPort        = dstPort,
-            length:         = udpLength,
-            payloadOffset:  = payloadOffset,
-            payloadLength:  = payloadLength
+        transport = .udp(UDPFields(
+            sourcePort:       srcPort,
+            destPort:         dstPort,
+            length:          udpLength,
+            payloadOffset:   payloadOffset,
+            payloadLength:   payloadLength
         ))
 
     default:
@@ -225,6 +239,8 @@ func dissect(frame: UnsafeRawPointer, captureLength: Int) -> Result<ParsedPacket
         ipTotalLength:      ipTotalLength,
         ipTTL:              ipTTL,
         ipProtocol:         ipProtocol,
+        sourceIP:           sourceIP,
+        destIP:             destIP,
         transport:          transport,
         captureLength:      captureLength
     ))

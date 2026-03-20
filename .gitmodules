@@ -1,0 +1,3 @@
+[submodule "swift-atomics"]
+	path = swift-atomics
+	url = https://github.com/apple/swift-atomics.git
