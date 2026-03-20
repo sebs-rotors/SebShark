@@ -95,7 +95,7 @@ func dissect(frame: UnsafeRawPointer, captureLength: Int) -> Result<ParsedPacket
         frame.loadUnaligned(fromByteOffset: 2, as: UInt8.self),
         frame.loadUnaligned(fromByteOffset: 3, as: UInt8.self),
         frame.loadUnaligned(fromByteOffset: 4, as: UInt8.self),
-        frame.loadUnaligned(fromByteOffset: 5, as: UInt8.self),
+        frame.loadUnaligned(fromByteOffset: 5, as: UInt8.self)
     ))
     
     let srcMAC = MACAddress(bytes: (
@@ -104,7 +104,7 @@ func dissect(frame: UnsafeRawPointer, captureLength: Int) -> Result<ParsedPacket
         frame.loadUnaligned(fromByteOffset: 8, as: UInt8.self),
         frame.loadUnaligned(fromByteOffset: 9, as: UInt8.self),
         frame.loadUnaligned(fromByteOffset: 10, as: UInt8.self),
-        frame.loadUnaligned(fromByteOffset: 11, as: UInt8.self),
+        frame.loadUnaligned(fromByteOffset: 11, as: UInt8.self)
     ))
     
     // EtherType is big-endian on the wire
