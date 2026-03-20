@@ -96,25 +96,86 @@ struct Packet1Tests {
     }
     
     // Ethernet
-     @Test func dstMAC() { #expect(result.dstMAC.bytes == (0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0x01)) }
-     @Test func srcMAC() { #expect(result.srcMAC.bytes == (0x11, 0x22, 0x33, 0x44, 0x55, 0x66)) }
-     @Test func etherType() { #expect(result.etherType == 0x0800) }
+    @Test func dstMAC() { #expect(result.dstMAC.bytes == (0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0x01)) }
+    @Test func srcMAC() { #expect(result.srcMAC.bytes == (0x11, 0x22, 0x33, 0x44, 0x55, 0x66)) }
+    @Test func etherType() { #expect(result.etherType == 0x0800) }
 
-     // IPv4
-     @Test func ipVersion()     { #expect(result.ipVersion    == 4) }
-     @Test func ipIHL()         { #expect(result.ipIHL        == 5) }
-     @Test func ipTotalLength() { #expect(result.ipTotalLength == 40) }
-     @Test func ipTTL()         { #expect(result.ipTTL        == 64) }
-     @Test func ipProtocol()    { #expect(result.ipProtocol   == 6) }
-     @Test func sourceIP()      { #expect(result.sourceIP     == 0xC0A8010A) }
-     @Test func destIP()        { #expect(result.destIP       == 0xC0A80101) }
+    // IPv4
+    @Test func ipVersion()     { #expect(result.ipVersion    == 4) }
+    @Test func ipIHL()         { #expect(result.ipIHL        == 5) }
+    @Test func ipTotalLength() { #expect(result.ipTotalLength == 40) }
+    @Test func ipTTL()         { #expect(result.ipTTL        == 64) }
+    @Test func ipProtocol()    { #expect(result.ipProtocol   == 6) }
+    @Test func sourceIP()      { #expect(result.sourceIP     == 0xC0A8010A) }
+    @Test func destIP()        { #expect(result.destIP       == 0xC0A80101) }
 
-     // TCP
-     @Test func srcPort()       { #expect(tcp.sourcePort     == 49152) }
-     @Test func dstPort()       { #expect(tcp.destPort       == 80) }
-     @Test func seqNum()        { #expect(tcp.sequenceNumber == 1) }
-     @Test func ackNum()        { #expect(tcp.acknowledgment == 0) }
-     @Test func flags()         { #expect(tcp.flags          == TCPFlags.syn) }
-     @Test func dataOffset()    { #expect(tcp.dataOffset     == 5) }
-     @Test func payloadLength() { #expect(tcp.payloadLength  == 0) }
+    // TCP
+    @Test func srcPort()       { #expect(tcp.sourcePort     == 49152) }
+    @Test func dstPort()       { #expect(tcp.destPort       == 80) }
+    @Test func seqNum()        { #expect(tcp.sequenceNumber == 1) }
+    @Test func ackNum()        { #expect(tcp.acknowledgment == 0) }
+    @Test func flags()         { #expect(tcp.flags          == TCPFlags.syn) }
+    @Test func dataOffset()    { #expect(tcp.dataOffset     == 5) }
+    @Test func payloadLength() { #expect(tcp.payloadLength  == 0) }
+    
+    // Test full range of info at once (swift test makes this unnecessary)
+    @Test func testFullRange() {
+        #expect(
+            result.dstMAC.bytes == (0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0x01) &&
+            result.srcMAC.bytes == (0x11, 0x22, 0x33, 0x44, 0x55, 0x66) &&
+            result.etherType == 0x0800 &&
+            result.ipVersion    == 4 &&
+            result.ipIHL        == 5 &&
+            result.ipTotalLength == 40 &&
+            result.ipTTL        == 64 &&
+            result.ipProtocol   == 6 &&
+            result.sourceIP     == 0xC0A8010A &&
+            result.destIP       == 0xC0A80101 &&
+            tcp.sourcePort     == 49152 &&
+            tcp.destPort       == 80 &&
+            tcp.sequenceNumber == 1 &&
+            tcp.acknowledgment == 0 &&
+            tcp.flags          == TCPFlags.syn &&
+            tcp.dataOffset     == 5 &&
+            tcp.payloadLength  == 0
+        )
+    }
+}
+
+@Suite("Dissector — Packet 2 (TCP PSH+ACK, /etc/passwd payload)")
+struct Packet2Tests {
+
+    let result: ParsedPacket
+    let tcp: TCPFields
+
+    init() throws {
+        result = try (
+            packet2.withUnsafeBytes { buf in
+                dissect(frame: buf.baseAddress!, captureLength: buf.count)
+            }.get()
+        )
+        guard case .tcp(let t) = result.transport else {
+            throw DissectorTestError.unexpectedTransport
+        }
+        tcp = t
+    }
+
+    @Test func ipTotalLength() { #expect(result.ipTotalLength == 71) }
+    @Test func seqNum()        { #expect(tcp.sequenceNumber  == 2) }
+    @Test func ackNum()        { #expect(tcp.acknowledgment  == 1) }
+    @Test func flags()         { #expect(tcp.flags == TCPFlags.psh | TCPFlags.ack) }
+    @Test func payloadOffset() { #expect(tcp.payloadOffset   == 54) }
+    @Test func payloadLength() { #expect(tcp.payloadLength   == 31) }
+
+    @Test func payloadStartBytes() {
+        // Verify first 4 bytes of payload are 'GET '
+        packet2.withUnsafeBytes { buf in
+            let payloadStart = buf.baseAddress!.advanced(by: tcp.payloadOffset)
+                .assumingMemoryBound(to: UInt8.self)
+            #expect(payloadStart[0] == 0x47) // G
+            #expect(payloadStart[1] == 0x45) // E
+            #expect(payloadStart[2] == 0x54) // T
+            #expect(payloadStart[3] == 0x20) // space
+        }
+    }
 }
