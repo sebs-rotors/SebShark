@@ -1,1 +1,3 @@
-THIS IS DEFINITELY NOT ME TRYING TO MAKE A WIRESHARK CLONE
+Seb's Network Intrusion Detection System
+
+A project
