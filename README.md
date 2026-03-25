@@ -13,19 +13,57 @@ Early development. Current progress:
 |
  Status 
 |
-|
 ---
-|
----
-|
 |
  BPF packet capture
 |
  Done
 |
+
 |
  Protocol Dissector
 |
  Done
 |
+
 |
+ Memory arena / packet slab allocator
+|
+ IN PROGRESS
+|
+
+|
+ SIMD pattern matching engine
+|
+ Not started
+|
+
+|
+ Cryptographic log integrity (HMAC-SHA256)
+|
+ Not started
+|
+
+|
+ kqueue event loop
+|
+ Not started
+|
+
+|
+ a pretty gui
+|
+ Not started
+|
+
+## Requirements
+- macOS 14+ (Sonoma)
+- Xcode 16+
+- Swift 6.0+
+- Root privileges (required for BPF device access)
+
+## Running
+```
+sudo swift run SebShark
+```
+
