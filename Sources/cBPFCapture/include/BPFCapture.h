@@ -21,7 +21,7 @@ typedef enum {
     BPF_ERR_HDRCMPL         = 7,
     BPF_ERR_ALLOC           = 8,
     BPF_ERR_READ            = 9,
-} BPFStatus;
+} BpfStatus;
 
 typedef struct BpfDevice BpfDevice;
 
@@ -29,6 +29,6 @@ typedef void (*BpfFrameCallback)(const uint8_t *frame, uint32_t caplen, void *ct
 
 BpfDevice *bpf_open(const char *interface, BpfStatus *status);
 
-BpfDevice *bpf_read(BpfDevice *dev, BpfFrameCallback handler, void *ctx);
+BpfStatus bpf_read(BpfDevice *dev, BpfFrameCallback handler, void *ctx);
 
 void bpf_close(BpfDevice *dev);

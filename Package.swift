@@ -15,20 +15,22 @@ let package = Package(
     targets: [
         .target(
             name: "SebSharkCore",
+            dependencies: ["cBPFCapture"],
             path: "Sources/SebSharkCore",
             swiftSettings: [
                 .unsafeFlags(["-strict-concurrency=complete"])
             ]
         ),
         .target(
-            name: "CBPFCapture",
-            path: "Sources/CBPFCapture",
+            name: "cBPFCapture",
+            path: "Sources/cBPFCapture",
             publicHeadersPath: "include"
         ),
         .executableTarget(
             name: "SebShark",
             dependencies: [
                 "SebSharkCore",
+                "cBPFCapture",
                 .product(name: "Atomics", package: "swift-atomics"),
             ],
             path: "Sources/SebShark",

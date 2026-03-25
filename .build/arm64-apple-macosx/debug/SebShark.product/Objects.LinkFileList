@@ -18,5 +18,7 @@
 /Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/Atomics.build/UnsafeAtomic.swift.o
 /Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/Atomics.build/UnsafeAtomicLazyReference.swift.o
 /Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/SebShark.build/main.swift.o
+/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/SebSharkCore.build/BPFCapture.swift.o
 /Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/SebSharkCore.build/Dissector.swift.o
 /Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/_AtomicsShims.build/src/_AtomicsShims.c.o
+/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/cBPFCapture.build/BPFCapture.c.o

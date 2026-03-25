@@ -331,6 +331,10 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/cBPFCapture.build/BPFCapture.c.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/Modules/Atomics.swiftmodule"
         },
         {
@@ -358,6 +362,12 @@
         "-DSWIFT_PACKAGE",
         "-DDEBUG",
         "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-Xcc",
+        "-fmodule-map-file=/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/cBPFCapture.build/module.modulemap",
+        "-Xcc",
+        "-I",
+        "-Xcc",
+        "/Users/sebisidor/Code/Personal/Tasks/SebShark/Sources/cBPFCapture/include",
         "-Xcc",
         "-fmodule-map-file=/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/checkouts/swift-atomics/Sources/_AtomicsShims/include/module.modulemap",
         "-Xcc",
@@ -432,11 +442,19 @@
       "inputs" : [
         {
           "kind" : "file",
+          "name" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/Sources/SebSharkCore/BPFCapture.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/Sources/SebSharkCore/Dissector.swift"
         },
         {
           "kind" : "file",
           "name" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/cBPFCapture.build/BPFCapture.c.o"
         },
         {
           "kind" : "file",
@@ -447,6 +465,7 @@
       "moduleName" : "SebSharkCore",
       "moduleOutputPath" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/Modules/SebSharkCore.swiftmodule",
       "objects" : [
+        "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/SebSharkCore.build/BPFCapture.swift.o",
         "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/SebSharkCore.build/Dissector.swift.o"
       ],
       "otherArguments" : [
@@ -463,6 +482,12 @@
         "-DSWIFT_PACKAGE",
         "-DDEBUG",
         "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-Xcc",
+        "-fmodule-map-file=/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/cBPFCapture.build/module.modulemap",
+        "-Xcc",
+        "-I",
+        "-Xcc",
+        "/Users/sebisidor/Code/Personal/Tasks/SebShark/Sources/cBPFCapture/include",
         "-module-cache-path",
         "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/ModuleCache",
         "-parseable-output",
@@ -510,6 +535,10 @@
       "outputs" : [
         {
           "kind" : "file",
+          "name" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/SebSharkCore.build/BPFCapture.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/SebSharkCore.build/Dissector.swift.o"
         },
         {
@@ -519,6 +548,7 @@
       ],
       "prepareForIndexing" : false,
       "sources" : [
+        "/Users/sebisidor/Code/Personal/Tasks/SebShark/Sources/SebSharkCore/BPFCapture.swift",
         "/Users/sebisidor/Code/Personal/Tasks/SebShark/Sources/SebSharkCore/Dissector.swift"
       ],
       "tempsPath" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/SebSharkCore.build",
@@ -568,6 +598,12 @@
         "-DSWIFT_PACKAGE",
         "-DDEBUG",
         "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-Xcc",
+        "-fmodule-map-file=/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/cBPFCapture.build/module.modulemap",
+        "-Xcc",
+        "-I",
+        "-Xcc",
+        "/Users/sebisidor/Code/Personal/Tasks/SebShark/Sources/cBPFCapture/include",
         "-module-cache-path",
         "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/ModuleCache",
         "-parseable-output",
@@ -670,6 +706,12 @@
         "-DSWIFT_PACKAGE",
         "-DDEBUG",
         "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-Xcc",
+        "-fmodule-map-file=/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/cBPFCapture.build/module.modulemap",
+        "-Xcc",
+        "-I",
+        "-Xcc",
+        "/Users/sebisidor/Code/Personal/Tasks/SebShark/Sources/cBPFCapture/include",
         "-module-cache-path",
         "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/ModuleCache",
         "-parseable-output",
@@ -850,6 +892,12 @@
       "-DDEBUG",
       "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
       "-Xcc",
+      "-fmodule-map-file=/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/cBPFCapture.build/module.modulemap",
+      "-Xcc",
+      "-I",
+      "-Xcc",
+      "/Users/sebisidor/Code/Personal/Tasks/SebShark/Sources/cBPFCapture/include",
+      "-Xcc",
       "-fmodule-map-file=/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/checkouts/swift-atomics/Sources/_AtomicsShims/include/module.modulemap",
       "-Xcc",
       "-I",
@@ -907,6 +955,7 @@
       "-package-name",
       "sebshark",
       "-c",
+      "/Users/sebisidor/Code/Personal/Tasks/SebShark/Sources/SebSharkCore/BPFCapture.swift",
       "/Users/sebisidor/Code/Personal/Tasks/SebShark/Sources/SebSharkCore/Dissector.swift",
       "-I",
       "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/Modules",
@@ -923,6 +972,12 @@
       "-DSWIFT_PACKAGE",
       "-DDEBUG",
       "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-Xcc",
+      "-fmodule-map-file=/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/cBPFCapture.build/module.modulemap",
+      "-Xcc",
+      "-I",
+      "-Xcc",
+      "/Users/sebisidor/Code/Personal/Tasks/SebShark/Sources/cBPFCapture/include",
       "-module-cache-path",
       "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/ModuleCache",
       "-parseable-output",
@@ -993,6 +1048,12 @@
       "-DSWIFT_PACKAGE",
       "-DDEBUG",
       "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-Xcc",
+      "-fmodule-map-file=/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/cBPFCapture.build/module.modulemap",
+      "-Xcc",
+      "-I",
+      "-Xcc",
+      "/Users/sebisidor/Code/Personal/Tasks/SebShark/Sources/cBPFCapture/include",
       "-module-cache-path",
       "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/ModuleCache",
       "-parseable-output",
@@ -1060,6 +1121,12 @@
       "-DSWIFT_PACKAGE",
       "-DDEBUG",
       "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-Xcc",
+      "-fmodule-map-file=/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/cBPFCapture.build/module.modulemap",
+      "-Xcc",
+      "-I",
+      "-Xcc",
+      "/Users/sebisidor/Code/Personal/Tasks/SebShark/Sources/cBPFCapture/include",
       "-module-cache-path",
       "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/ModuleCache",
       "-parseable-output",
@@ -1109,19 +1176,25 @@
     "SebShark" : [
       "Atomics",
       "_AtomicsShims",
-      "SebSharkCore"
+      "SebSharkCore",
+      "cBPFCapture"
     ],
     "SebSharkCore" : [
-
+      "cBPFCapture"
     ],
     "SebSharkPackageTests" : [
       "SebSharkTests",
-      "SebSharkCore"
+      "SebSharkCore",
+      "cBPFCapture"
     ],
     "SebSharkTests" : [
-      "SebSharkCore"
+      "SebSharkCore",
+      "cBPFCapture"
     ],
     "_AtomicsShims" : [
+
+    ],
+    "cBPFCapture" : [
 
     ]
   },
@@ -1350,11 +1423,19 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/SebSharkCore.build/BPFCapture.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/SebSharkCore.build/Dissector.swift.o"
         },
         {
           "kind" : "file",
           "name" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/_AtomicsShims.build/src/_AtomicsShims.c.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/cBPFCapture.build/BPFCapture.c.o"
         }
       ],
       "outputFilePath" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/SebShark.product/Objects.LinkFileList"
@@ -1365,6 +1446,10 @@
         {
           "kind" : "virtual",
           "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/Sources/SebSharkCore/BPFCapture.swift"
         },
         {
           "kind" : "file",
@@ -1396,6 +1481,10 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/SebSharkCore.build/BPFCapture.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/SebSharkCore.build/Dissector.swift.o"
         },
         {
@@ -1405,6 +1494,10 @@
         {
           "kind" : "file",
           "name" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/SebSharkTests.build/DissectorTests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/cBPFCapture.build/BPFCapture.c.o"
         }
       ],
       "outputFilePath" : "/Users/sebisidor/Code/Personal/Tasks/SebShark/.build/arm64-apple-macosx/debug/SebSharkPackageTests.product/Objects.LinkFileList"

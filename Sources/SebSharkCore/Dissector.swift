@@ -9,7 +9,7 @@ import Darwin
 
 // MARK: Error
 
-enum DissectError: Error, Sendable {
+public enum DissectError: Error, Sendable {
     case tooShort           // frame is smaller than required headers
     case notIPv4            // EtherType must be 0x0800
     case malformedIHL       // IP IHL field < 5 (minimum 20B header)
@@ -18,57 +18,57 @@ enum DissectError: Error, Sendable {
 
 // MARK: Result Types
 
-struct MACAddress: Sendable {
-    let bytes: (UInt8, UInt8, UInt8, UInt8, UInt8, UInt8)
+public struct MACAddress: Sendable {
+    public let bytes: (UInt8, UInt8, UInt8, UInt8, UInt8, UInt8)
 }
 
-struct TCPFields: Sendable {
-    let sourcePort:         UInt16
-    let destPort:           UInt16
-    let sequenceNumber:     UInt32
-    let acknowledgment:     UInt32
-    let dataOffset:         UInt8
-    let flags:              UInt16
-    let windowSize:         UInt16
-    let payloadOffset:      Int
-    let payloadLength:      Int
+public struct TCPFields: Sendable {
+    public let sourcePort:         UInt16
+    public let destPort:           UInt16
+    public let sequenceNumber:     UInt32
+    public let acknowledgment:     UInt32
+    public let dataOffset:         UInt8
+    public let flags:              UInt16
+    public let windowSize:         UInt16
+    public let payloadOffset:      Int
+    public let payloadLength:      Int
 }
 
-struct UDPFields: Sendable {
-    let sourcePort:         UInt16
-    let destPort:           UInt16
-    let length:             UInt16
-    let payloadOffset:      Int
-    let payloadLength:      Int
+public struct UDPFields: Sendable {
+    public let sourcePort:         UInt16
+    public let destPort:           UInt16
+    public let length:             UInt16
+    public let payloadOffset:      Int
+    public let payloadLength:      Int
 }
 
-enum TransportLayer: Sendable {
+public enum TransportLayer: Sendable {
     case icmp
     case tcp(TCPFields)
     case udp(UDPFields)
     case other(UInt8)       // protocol number this dissector just cannot comprehend
 }
 
-struct ParsedPacket: Sendable {
+public struct ParsedPacket: Sendable {
     // Ethernet layer
-    let dstMAC:             MACAddress
-    let srcMAC:             MACAddress
-    let etherType:          UInt16
+    public let dstMAC:             MACAddress
+    public let srcMAC:             MACAddress
+    public let etherType:          UInt16
     
     // IPv4 (Network) layer
-    let ipVersion:          UInt8
-    let ipIHL:              UInt8
-    let ipTotalLength:      UInt16
-    let ipTTL:              UInt8
-    let ipProtocol:         UInt8
-    let sourceIP:           UInt32
-    let destIP:             UInt32
+    public let ipVersion:          UInt8
+    public let ipIHL:              UInt8
+    public let ipTotalLength:      UInt16
+    public let ipTTL:              UInt8
+    public let ipProtocol:         UInt8
+    public let sourceIP:           UInt32
+    public let destIP:             UInt32
     
     // Transport layer
-    let transport:          TransportLayer
+    public let transport:          TransportLayer
     
     // Original capture size
-    let captureLength:      Int
+    public let captureLength:      Int
 }
 
 // TCP flag masks
@@ -82,7 +82,7 @@ enum TCPFlags {
 }
 
 // MARK: Dissector function
-func dissect(frame: UnsafeRawPointer, captureLength: Int) -> Result<ParsedPacket, DissectError> {
+public func dissect(frame: UnsafeRawPointer, captureLength: Int) -> Result<ParsedPacket, DissectError> {
     
     // Ethernet layer (14B min)
     guard captureLength >= 14 else { return .failure(.tooShort) }

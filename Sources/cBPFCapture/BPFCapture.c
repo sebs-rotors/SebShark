@@ -5,7 +5,7 @@
 //  Created by Sebastian Sidor on 3/20/26.
 //
 
-#include "CBPFCapture.h"
+#include "BPFCapture.h"
 
 #include <fcntl.h>
 #include <stdio.h>
@@ -16,13 +16,13 @@
 #include <net/if.h>
 #include <sys/ioctl.h>
 
-#DEFINE BPF_REQUESTED_BUFFER (2 * 1024 * 1024) // 2MB per spec
+#define BPF_REQUESTED_BUFFER (2 * 1024 * 1024) // 2MB per spec
 
 struct BpfDevice {
     int     fd;
     uint8_t *buffer;
     size_t  bufferSize;
-}
+};
 
 // Simplifying repetitive error handling
 static void xErr(int fd, BpfStatus *status, BpfStatus ErrNo) {
@@ -84,7 +84,7 @@ BpfDevice *bpf_open(const char *interface, BpfStatus *status) {
     }
     
     // complete headers, no link-layer field autofill
-    if (ioctl(fd, BIOCSHDRCMPL, &one) < 0) {
+    if (ioctl(fd, BIOCSHDRCMPLT, &one) < 0) {
         xErr(fd, status, BPF_ERR_HDRCMPL);
         return NULL;
     }
@@ -109,4 +109,34 @@ BpfDevice *bpf_open(const char *interface, BpfStatus *status) {
     
     if (status) *status = BPF_OK;
     return dev;
+}
+
+BpfStatus bpf_read(BpfDevice *dev, BpfFrameCallback handler, void *ctx) {
+    ssize_t bytesRead = read(dev->fd, dev->buffer, dev->bufferSize);
+    if (bytesRead <= 0) return BPF_ERR_READ;
+    
+    uint8_t *ptr = dev->buffer;
+    uint8_t *end = dev->buffer + bytesRead;
+    
+    while (ptr < end) {
+        struct bpf_hdr *hdr = (struct bpf_hdr *)ptr;
+        
+        // frame data should start immediately after the header
+        const uint8_t *frame = ptr + hdr->bh_hdrlen;
+        handler(frame, hdr->bh_caplen, ctx);
+        
+        // BPF_WORDALIGN rounds up to 4B boundary
+        size_t advance = BPF_WORDALIGN(hdr->bh_hdrlen + hdr->bh_caplen);
+        if (advance == 0) break; // break upon corrupt record
+        ptr += advance;
+    }
+    
+    return BPF_OK;
+}
+
+void bpf_close(BpfDevice *dev) {
+    if (!dev) return;
+    close(dev->fd);
+    free(dev->buffer);
+    free(dev);
 }
