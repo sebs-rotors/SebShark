@@ -25,7 +25,7 @@ do {
                 print("\(src) → \(dst) | \(packet.transport)")
                 print("\(src) → \(dst) | \(packet.transport)")
             case .failure(let err):
-                break   // non-IPv4 or malformed — expected and fine
+                break 
             }
         }
     }
