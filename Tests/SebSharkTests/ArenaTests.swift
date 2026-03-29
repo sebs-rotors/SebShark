@@ -41,3 +41,53 @@ public enum ArenaLayout {
     public static let ringOffset: Int = ruleBytes + alertBytes + connBytes + packetBytes
     public static let ringBytes: Int = 32 * 1024 * 24
 }
+
+// MARK: Enums
+
+public enum TCPState: UInt8, Sendable {
+    case empty = 0
+    case synSent = 1
+    case synRecv = 2
+    case established = 3
+    case finWait = 4
+    case closed = 5
+}
+
+public enum MatchType: UInt8, Sendable {
+    case payloadContains = 0x01
+    case payloadStartsWith = 0x02
+    case tcpFlagsMatch = 0x10
+    case anomalyThreshold = 0x20
+}
+
+public enum AlertSeverity: UInt8, Sendable, CustomStringConvertible {
+    case info = 0
+    case low = 1
+    case medium = 2
+    case high = 3
+    case critical = 4
+    
+    public var description: String {
+        switch self {
+        case .info: return "INFO"
+        case .low: return "LOW"
+        case .medium: return "MEDIUM"
+        case .high: return "HIGH"
+        case .critical: return "CRITICAL"
+        }
+    }
+}
+
+public enum AlertCategory: UInt16, Sendable {
+    case signatureMatch = 0x0001
+    case synFlood = 0x0002
+    case portScan = 0x0003
+    case rstInjection = 0x0004
+    case halfOpenStorm = 0x0005
+    case malformedPacket = 0x0006
+    case idleTimeout = 0x0007
+    case dnsTunnel = 0x0008
+    case arpSpoof = 0x0009
+    case fragmentAttack = 0x000a
+}
+
