@@ -193,3 +193,23 @@ public struct RulePattern: Sendable {
     private var _c18: UInt64 = 0; private var _c19: UInt64 = 0; private var _c20: UInt64 = 0;
     private var _c21: UInt64 = 0; private var _c22: UInt64 = 0; private var _c23: UInt64 = 0;
 }
+
+// MARK: Layout Verification
+public func verifySlotSizes() {
+    precondition(
+        MemoryLayout<PacketMetadata>.size == 64,
+        "PacketMetadata expected size: 64, got \(MemoryLayout<PacketMetadata>.size)"
+    )
+    precondition(
+        MemoryLayout<ConnectionState>.size == 128,
+        "ConnectionState expected size: 128, got \(MemoryLayout<ConnectionState>.size)"
+    )
+    precondition(
+        MemoryLayout<AlertRecord>.size == 96,
+        "AlertRecord expected size: 96, got \(MemoryLayout<AlertRecord>.size)"
+    )
+    precondition(
+        MemoryLayout<RulePattern>.size == 256,
+        "RulePattern expected size: 256, got \(MemoryLayout<RulePattern>.size)"
+    )
+}
