@@ -38,7 +38,7 @@ public enum ArenaLayout {
     public static let ruleSlots:        Int = ruleBytes / 256
     
     public static let ringOffset:       Int = ruleBytes + alertBytes + connBytes + packetBytes
-    public static let ringBytes:        Int = 32 * 1024 * 24
+    public static let ringBytes:        Int = 32 * 1024 * 1024
 }
 
 // MARK: Enums
@@ -123,7 +123,7 @@ public struct ConnectionState: Sendable {
     public var dstPort:         UInt16 = 0
     public var synCount:        UInt16 = 0
     public var lastSeqFwd:      UInt16 = 0
-    public var lasSeqRev:       UInt16 = 0
+    public var lastSeqRev:       UInt16 = 0
     public var state:           UInt8 = 0
     public var seenFlags:       UInt8 = 0
     
@@ -135,8 +135,8 @@ public struct ConnectionState: Sendable {
     private var _r4:    UInt64 = 0
     private var _r5:    UInt64 = 0
     private var _r6:    UInt64 = 0
-    private var _r7:    UInt64 = 0
-    private var _r8:    UInt64 = 0
+    private var _r7:    UInt32 = 0
+    private var _r8:    UInt32 = 0
 }
 
 public struct AlertRecord: Sendable {
@@ -165,7 +165,7 @@ public struct RulePattern: Sendable {
     public var ruleID: UInt32 = 0
     public var matchType: UInt8 = 0
     public var severity: UInt8 = 0
-    public var category: UInt8 = 0
+    public var category: UInt16 = 0
     public var protocolFilter: UInt8 = 0
     public var flags: UInt8 = 0
     public var destPortFilter: UInt16 = 0
